@@ -1,0 +1,42 @@
+---
+name: "CloudFormation Review"
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - main
+      
+jobs:
+
+  checkov:
+    name: checkov
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: grolston/cfn-security@v1
+      with:
+        cloudformation_directory: './cloudformation/' ## change to your template directory
+        scanner: "checkov"
+
+  cfn-nag:
+    name: cfn-nag
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: grolston/cfn-security@v1
+      with:
+        cloudformation_directory: './cloudformation/' ## change to your template directory
+        scanner: "cfn-nag"
+
+  # Commented due to review errors
+  cfn-lint:
+    if: false
+    name: cfn-lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: grolston/cfn-security@v1
+      with:
+        cloudformation_directory: './cloudformation/' ## change to your template directory
+        scanner: "cfn-lint"

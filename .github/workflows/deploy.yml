@@ -1,0 +1,48 @@
+---
+name: "Deploy Resources"
+
+on:
+  workflow_dispatch
+  # push:
+  #   branches:
+  #     - master
+  #     - main
+
+env:
+
+  ## GLOBAL VARIABLES
+  AWS_ROLE_SESSION_NAME: ${{ secrets.ROLE_SESSION_NAME }}
+  AWS_ROLE_SESSION_DURATION: ${{ secrets.ROLE_SESSION_DURATION }}
+  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+  ## PROJECT VARIABLES
+  AWS_ROLE_ARN: ${{ secrets.DEPLOY_ROLE_ARN }}
+  AWS_CFN_BUCKET:
+  AWS_BUCKET_PREFIX:
+  CFN_DIR: cloudformation
+
+jobs:
+  Deploy:
+    name: Deploy Resources
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout Project
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        role-duration-seconds: ${{ env.AWS_ROLE_SESSION_DURATION }}
+        role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
+        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
+    # - name: Deploy/Update Stack
+    #     uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+    #     with:
+    #       name: bucket-effectual-mcm
+    #       template: cloudformation/
+    #       no-fail-on-empty-changeset: "1"
