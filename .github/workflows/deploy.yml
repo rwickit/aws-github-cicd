@@ -1,8 +1,7 @@
 ---
 name: "Deploy Resources"
 
-on:
-  workflow_dispatch
+on: [workflow_dispatch]
   # push:
   #   branches:
   #     - master
