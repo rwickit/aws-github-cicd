@@ -112,7 +112,7 @@ Resources:
             Principal: "*"
             Action:
               - "s3:GetObject"
-            Resource: !Sub 'arn:aws:s3:::${Bucket}/*'
+            Resource: !Sub 'arn:${AWS::Partition}:s3:::${Bucket}/*'
 
           - Sid: DenyOutsideOrganization
             Effect: Deny
@@ -120,7 +120,7 @@ Resources:
               AWS: "*"
             Action:
             - "s3:GetObject"
-            Resource: !Sub 'arn:aws:s3:::${Bucket}/*'
+            Resource: !Sub 'arn:${AWS::Partition}:s3:::${Bucket}/*'
             Condition:
               StringNotEquals:
                 aws:PrincipalOrgID: !Ref OrganizationID
@@ -145,7 +145,7 @@ Resources:
             Principal: "*"
             Action:
               - "s3:GetObject"
-            Resource: !Sub 'arn:aws:s3:::${Bucket}/*'
+            Resource: !Sub 'arn:${AWS::Partition}:s3:::${Bucket}/*'
 
 Outputs:
 
