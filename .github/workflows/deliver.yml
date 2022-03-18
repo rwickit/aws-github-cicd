@@ -15,13 +15,13 @@ env:
   COM_NAME: ${{ secrets.COM_AWS_ROLE_SESSION_NAME }}
   COM_DURATION: ${{ secrets.COM_AWS_ROLE_SESSION_DURATION }}
   COM_REGION: ${{ secrets.COM_AWS_DEFAULT_REGION }}
-  COM_ROLE: ${{ secrets.COM_ROLE_ARN_DELIVER }}
+  COM_ROLE: ${{ secrets.COM_ROLE_ARN_DELIVERY }}
 
   ### GovCloud
   GOV_NAME: ${{ secrets.GOV_AWS_ROLE_SESSION_NAME }}
   GOV_DURATION: ${{ secrets.GOV_AWS_ROLE_SESSION_DURATION }}
-  GOV_REGION: ${{ secrets.AWS_GOV_DEFAULT_REGION }}
-  GOV_ROLE: ${{ secrets.GOV_ROLE_ARN_DELIVER }}
+  GOV_REGION: ${{ secrets.GOV_AWS_DEFAULT_REGION }}
+  GOV_ROLE: ${{ secrets.GOV_ROLE_ARN_DELIVERY }}
 
   ## PROJECT VARIABLES
   BUCKET: solutions.rwick.it
