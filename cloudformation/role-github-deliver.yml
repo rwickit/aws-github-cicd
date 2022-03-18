@@ -79,8 +79,8 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                 Resource:
-                  - 'arn:aws:s3:::*'
-                  - 'arn:aws:s3:::*/*'
+                  - 'arn:${AWS::Partition}:s3:::*'
+                  - 'arn:${AWS::Partition}:s3:::*/*'
 
 Outputs:
 

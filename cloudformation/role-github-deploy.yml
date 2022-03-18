@@ -69,7 +69,7 @@ Resources:
       ManagedPolicyArns:
         - !Sub arn:${AWS::Partition}:iam::aws:policy/ReadOnlyAccess
         - !Sub arn:${AWS::Partition}:iam::aws:policy/AdministratorAccess
-        - !Sub arn:${AWS::Partition:iam::aws:policy/AWSCloudFormationFullAccess
+        - !Sub arn:${AWS::Partition}:iam::aws:policy/AWSCloudFormationFullAccess
       Policies:
         -
           PolicyName: S3-Allow
@@ -82,8 +82,8 @@ Resources:
                   - s3:ListBucket
                   - s3:GetObject
                 Resource:
-                  - 'arn:aws:s3:::*'
-                  - 'arn:aws:s3:::*/*'
+                  - 'arn:${AWS::Partition}:s3:::*'
+                  - 'arn:${AWS::Partition}:s3:::*/*'
 
 Outputs:
 
