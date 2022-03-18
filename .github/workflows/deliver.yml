@@ -12,10 +12,10 @@ env:
   ## GLOBAL VARIABLES
 
   ### Commercial
-  NAME: ${{ secrets.AWS_ROLE_SESSION_NAME }}
-  DURATION: ${{ secrets.AWS_ROLE_SESSION_DURATION }}
-  REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  ROLE: ${{ secrets.ROLE_ARN_DELIVER }}
+  COM_NAME: ${{ secrets.COM_AWS_ROLE_SESSION_NAME }}
+  COM_DURATION: ${{ secrets.COM_AWS_ROLE_SESSION_DURATION }}
+  COM_REGION: ${{ secrets.COM_AWS_DEFAULT_REGION }}
+  COM_ROLE: ${{ secrets.COM_ROLE_ARN_DELIVER }}
 
   ### GovCloud
   GOV_NAME: ${{ secrets.GOV_AWS_ROLE_SESSION_NAME }}
@@ -30,7 +30,7 @@ env:
 
 jobs:
   Deliver-Commercial:
-    name: Deliver Resources to S3 Commercial
+    name: Commercial - Deliver Resources to S3
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -42,17 +42,17 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-session-name: ${{ env.NAME }}
-        role-duration-seconds: ${{ env.DURATION }}
-        aws-region: ${{ env.REGION }}
-        role-to-assume: ${{ env.ROLE }}
+        role-session-name: ${{ env.COM_NAME }}
+        role-duration-seconds: ${{ env.COM_DURATION }}
+        aws-region: ${{ env.COM_REGION }}
+        role-to-assume: ${{ env.COM_ROLE }}
 
     - name: Sync to S3
       run: |
         aws s3 sync ${{ env.DIRECTORY }} s3://${{ env.BUCKET }}/${{ env.PREFIX }}
 
-  Deliver-GovCloudl:
-    name: Deliver Resources to S3 GovCloud
+  Deliver-GovCloud:
+    name: GovCloud - Deliver Resources to S3
     runs-on: ubuntu-latest
     permissions:
       id-token: write
