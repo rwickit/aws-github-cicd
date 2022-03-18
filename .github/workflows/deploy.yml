@@ -1,8 +1,7 @@
 ---
 name: "Deploy Resources"
 
-on:
-  workflow_dispatch
+on: [workflow_dispatch]
   # push:
   #   branches:
   #     - master
@@ -13,10 +12,10 @@ env:
   ## GLOBAL VARIABLES
 
   ### Commercial
-  NAME: ${{ secrets.AWS_ROLE_SESSION_NAME }}
-  DURATION: ${{ secrets.AWS_ROLE_SESSION_DURATION }}
-  REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-  ROLE: ${{ secrets.ROLE_ARN_DELIVER }}
+  COM_NAME: ${{ secrets.COM_AWS_ROLE_SESSION_NAME }}
+  COM_DURATION: ${{ secrets.COM_AWS_ROLE_SESSION_DURATION }}
+  COM_REGION: ${{ secrets.COM_AWS_DEFAULT_REGION }}
+  COM_ROLE: ${{ secrets.COM_ROLE_ARN_DELIVER }}
 
   ### GovCloud
   GOV_NAME: ${{ secrets.GOV_AWS_ROLE_SESSION_NAME }}
@@ -29,7 +28,7 @@ env:
 
 jobs:
   Deploy-Commercial:
-    name: Deploy Resources
+    name: Commercial - Deploy Resources
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -41,10 +40,10 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-session-name: ${{ env.NAME }}
-        role-duration-seconds: ${{ env.DURATION }}
-        aws-region: ${{ env.REGION }}
-        role-to-assume: ${{ env.ROLE }}
+        role-session-name: ${{ env.COM_NAME }}
+        role-duration-seconds: ${{ env.COM_DURATION }}
+        aws-region: ${{ env.COM_REGION }}
+        role-to-assume: ${{ env.COM_ROLE }}
 
     # - name: Deploy/Update Stack
     #     uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
@@ -53,8 +52,8 @@ jobs:
     #       template: cloudformation/
     #       no-fail-on-empty-changeset: "1"
 
-  Deploy-Commercial:
-    name: Deploy Resources
+  Deploy-GovCloud:
+    name: GovCloud - Deploy Resources
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -70,3 +69,10 @@ jobs:
         role-duration-seconds: ${{ env.GOV_DURATION }}
         aws-region: ${{ env.GOV_REGION }}
         role-to-assume: ${{ env.GOV_ROLE }}
+
+    # - name: Deploy/Update Stack
+    #     uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+    #     with:
+    #       name: bucket-effectual-mcm
+    #       template: cloudformation/
+    #       no-fail-on-empty-changeset: "1"
