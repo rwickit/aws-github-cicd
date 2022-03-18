@@ -29,9 +29,7 @@ Parameters:
 
 Conditions:
 
-  CreateProvider: !Equals
-    - !Ref UseExistingProvider
-    - ""
+  CreateProvider: !Equals [!Ref UseExistingProvider, "no"]
 
 Resources:
 
