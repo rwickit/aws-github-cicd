@@ -10,19 +10,27 @@ on:
 env:
 
   ## GLOBAL VARIABLES
-  AWS_ROLE_SESSION_NAME: ${{ secrets.ROLE_SESSION_NAME }}
-  AWS_ROLE_SESSION_DURATION: ${{ secrets.ROLE_SESSION_DURATION }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+  ### Commercial
+  NAME: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+  DURATION: ${{ secrets.AWS_ROLE_SESSION_DURATION }}
+  REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  ROLE: ${{ secrets.ROLE_ARN_DELIVER }}
+
+  ### GovCloud
+  GOV_NAME: ${{ secrets.GOV_AWS_ROLE_SESSION_NAME }}
+  GOV_DURATION: ${{ secrets.GOV_AWS_ROLE_SESSION_DURATION }}
+  GOV_REGION: ${{ secrets.AWS_GOV_DEFAULT_REGION }}
+  GOV_ROLE: ${{ secrets.GOV_ROLE_ARN_DELIVER }}
 
   ## PROJECT VARIABLES
-  AWS_ROLE_ARN: ${{ secrets.DELIVER_ROLE_ARN }}
-  AWS_CFN_BUCKET: solutions.rwick.it
-  AWS_BUCKET_PREFIX: github-cicd
-  CFN_DIR: cloudformation
+  BUCKET: solutions.rwick.it
+  PREFIX: github-cicd
+  DIRECTORY: cloudformation
 
 jobs:
-  Deliver:
-    name: Deliver Resources to S3
+  Deliver-Commercial:
+    name: Deliver Resources to S3 Commercial
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -34,11 +42,33 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        role-duration-seconds: ${{ env.AWS_ROLE_SESSION_DURATION }}
-        role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
-        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+        role-session-name: ${{ env.NAME }}
+        role-duration-seconds: ${{ env.DURATION }}
+        aws-region: ${{ env.REGION }}
+        role-to-assume: ${{ env.ROLE }}
 
     - name: Sync to S3
       run: |
-        aws s3 sync ${{ env.CFN_DIR }} s3://${{ env.AWS_CFN_BUCKET }}/${{ env.AWS_BUCKET_PREFIX }} --region ${{ env.AWS_DEFAULT_REGION }}
+        aws s3 sync ${{ env.DIRECTORY }} s3://${{ env.BUCKET }}/${{ env.PREFIX }}
+
+  Deliver-GovCloudl:
+    name: Deliver Resources to S3 GovCloud
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout Project
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-session-name: ${{ env.GOV_NAME }}
+        role-duration-seconds: ${{ env.GOV_DURATION }}
+        aws-region: ${{ env.GOV_REGION }}
+        role-to-assume: ${{ env.GOV_ROLE }}
+
+    - name: Sync to S3
+      run: |
+        aws s3 sync ${{ env.DIRECTORY }} s3://${{ env.BUCKET }}/${{ env.PREFIX }}
