@@ -11,18 +11,24 @@ on:
 env:
 
   ## GLOBAL VARIABLES
-  AWS_ROLE_SESSION_NAME: ${{ secrets.ROLE_SESSION_NAME }}
-  AWS_ROLE_SESSION_DURATION: ${{ secrets.ROLE_SESSION_DURATION }}
-  AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+  ### Commercial
+  NAME: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+  DURATION: ${{ secrets.AWS_ROLE_SESSION_DURATION }}
+  REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+  ROLE: ${{ secrets.ROLE_ARN_DELIVER }}
+
+  ### GovCloud
+  GOV_NAME: ${{ secrets.GOV_AWS_ROLE_SESSION_NAME }}
+  GOV_DURATION: ${{ secrets.GOV_AWS_ROLE_SESSION_DURATION }}
+  GOV_REGION: ${{ secrets.AWS_GOV_DEFAULT_REGION }}
+  GOV_ROLE: ${{ secrets.GOV_ROLE_ARN_DELIVER }}
 
   ## PROJECT VARIABLES
-  AWS_ROLE_ARN: ${{ secrets.DEPLOY_ROLE_ARN }}
-  AWS_CFN_BUCKET:
-  AWS_BUCKET_PREFIX:
-  CFN_DIR: cloudformation
+
 
 jobs:
-  Deploy:
+  Deploy-Commercial:
     name: Deploy Resources
     runs-on: ubuntu-latest
     permissions:
@@ -35,10 +41,10 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: ${{ env.AWS_ROLE_ARN }}
-        role-duration-seconds: ${{ env.AWS_ROLE_SESSION_DURATION }}
-        role-session-name: ${{ env.AWS_ROLE_SESSION_NAME }}
-        aws-region: ${{ env.AWS_DEFAULT_REGION }}
+        role-session-name: ${{ env.NAME }}
+        role-duration-seconds: ${{ env.DURATION }}
+        aws-region: ${{ env.REGION }}
+        role-to-assume: ${{ env.ROLE }}
 
     # - name: Deploy/Update Stack
     #     uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
@@ -46,3 +52,21 @@ jobs:
     #       name: bucket-effectual-mcm
     #       template: cloudformation/
     #       no-fail-on-empty-changeset: "1"
+
+  Deploy-Commercial:
+    name: Deploy Resources
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout Project
+      uses: actions/checkout@v2
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-session-name: ${{ env.GOV_NAME }}
+        role-duration-seconds: ${{ env.GOV_DURATION }}
+        aws-region: ${{ env.GOV_REGION }}
+        role-to-assume: ${{ env.GOV_ROLE }}
