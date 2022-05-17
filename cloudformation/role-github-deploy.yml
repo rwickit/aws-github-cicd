@@ -80,8 +80,8 @@ Resources:
                   - s3:ListBucket
                   - s3:GetObject
                 Resource:
-                  - 'arn:${AWS::Partition}:s3:::*'
-                  - 'arn:${AWS::Partition}:s3:::*/*'
+                  - !Sub 'arn:${AWS::Partition}:s3:::*'
+                  - !Sub 'arn:${AWS::Partition}:s3:::*/*'
 
 Outputs:
 
